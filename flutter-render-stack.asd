@@ -4,9 +4,12 @@
   :author "Joel Boehland"
   :license "MIT"
   :depends-on (:flutter-render-stack-ffi
+               :render-stack-internals  ; FFI utils, logging, cancellation
+               :cffi                    ; foreign function interface
+               :cffi-c-ref              ; stack-allocated struct construction
+               :float-features          ; float trap masking
                :alexandria
-               :bordeaux-threads
-               :log4cl)
+               :verbose)               ; operational logging (Shinmera)
   :components ((:module "src"
                 :components ((:file "package")
                              (:file "conditions" :depends-on ("package"))
@@ -28,9 +31,10 @@
 
 (asdf:defsystem :flutter-render-stack/tests
   :depends-on (:flutter-render-stack
-               :fiveam)
+               :parachute)
   :components ((:module "test"
                 :components ((:file "package")
-                             (:file "impeller-tests" :depends-on ("package"))
-                             (:file "flow-tests" :depends-on ("package")))))
-  :perform (test-op (op c) (symbol-call :fiveam :run! :flutter-render-stack)))
+                             (:file "test-utils" :depends-on ("package"))
+                             (:file "impeller-tests" :depends-on ("test-utils"))
+                             (:file "flow-tests" :depends-on ("test-utils")))))
+  :perform (test-op (op c) (uiop:symbol-call :parachute :test :flutter-render-stack-tests)))
