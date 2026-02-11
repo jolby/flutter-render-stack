@@ -49,6 +49,7 @@
    #:draw-oval
    #:draw-path
    #:execute-display-list
+   #:surface-draw-display-list
    #:display-list-builder-set-transform
 
    ;; === IMPELLER: Display list state management ===
@@ -202,6 +203,15 @@
    #:release-compositor-context
    #:retain-compositor-context
    #:with-compositor-context
+   
+   ;; === FLOW: Scoped frame (rasterization) ===
+   #:compositor-context-acquire-frame
+   #:release-scoped-frame
+   #:retain-scoped-frame
+   #:with-scoped-frame
+   #:scoped-frame-build-display-list
+   #:with-rasterized-display-list
+   #:scoped-frame-raster
 
    ;; === FLOW: Raster cache ===
    #:compositor-context-get-raster-cache

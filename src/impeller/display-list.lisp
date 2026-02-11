@@ -298,6 +298,20 @@ Returns nil. Executes all recorded drawing operations on the surface."
       (impeller-ffi:display-list-release dl)))
   nil)
 
+(defun surface-draw-display-list (surface display-list)
+  "Draw a pre-built display list directly to a surface.
+
+Arguments:
+  surface      - Surface from make-wrapped-fbo-surface
+  display-list - A pre-built ImpellerDisplayList (e.g., from
+                 scoped-frame-build-display-list or create-display-list)
+
+Unlike execute-display-list (which takes a builder and builds first),
+this function draws an already-built display list. Use this for the
+Flow rasterization workflow where FlowScopedFrameBuildDisplayListNew
+returns a pre-built display list."
+  (impeller-ffi:surface-draw-display-list surface display-list))
+
 ;;; Surface management
 
 (defun make-wrapped-fbo-surface (context fbo-id width height)
