@@ -88,6 +88,27 @@ Returns nil."
     (impeller-ffi:display-list-builder-draw-oval builder (rect &) paint))
   nil)
 
+(defun draw-line (builder from-x from-y to-x to-y paint)
+  "Draw a line to a display list builder.
+
+Arguments:
+  builder - Display list builder from with-display-list-builder
+  from-x  - Start X coordinate (float)
+  from-y  - Start Y coordinate (float)
+  to-x    - End X coordinate (float)
+  to-y    - End Y coordinate (float)
+  paint   - Paint object from make-paint (use :stroke draw style)
+
+Returns nil."
+  (cffi-c-ref:c-with ((from-pt (:struct impeller-ffi:point))
+                       (to-pt (:struct impeller-ffi:point)))
+    (setf (from-pt :x) (float from-x 1.0f0)
+          (from-pt :y) (float from-y 1.0f0)
+          (to-pt :x) (float to-x 1.0f0)
+          (to-pt :y) (float to-y 1.0f0))
+    (impeller-ffi:display-list-builder-draw-line builder (from-pt &) (to-pt &) paint))
+  nil)
+
 (defun draw-path (builder path paint)
   "Draw a path to a display list builder.
 

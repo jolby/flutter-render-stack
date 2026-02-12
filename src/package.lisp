@@ -47,6 +47,7 @@
    #:draw-paint
    #:draw-rect
    #:draw-oval
+   #:draw-line
    #:draw-path
    #:execute-display-list
    #:surface-draw-display-list
