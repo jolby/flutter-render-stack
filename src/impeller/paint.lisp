@@ -125,3 +125,26 @@ Returns nil. Modifies paint in place."
        (cffi:null-pointer)
        color-source))
   nil)
+
+(defun paint-set-blend-mode (paint blend-mode)
+  "Set the blend mode for compositing this paint.
+
+Arguments:
+  paint      - Paint object from make-paint
+  blend-mode - Blend mode keyword:
+               :clear, :source, :destination, :source-over (default),
+               :destination-over, :source-in, :destination-in,
+               :source-out, :destination-out, :source-atop, :destination-atop,
+               :xor, :plus, :modulate, :screen, :overlay, :darken, :lighten,
+               :color-dodge, :color-burn, :hard-light, :soft-light,
+               :difference, :exclusion, :multiply, :hue, :saturation,
+               :color, :luminosity
+
+The blend mode determines how the paint's output is composited with
+the background. Default is :source-over (alpha blending).
+
+Returns nil. Modifies paint in place."
+  (impeller-ffi:paint-set-blend-mode
+   paint
+   (blend-mode-keyword->blend-mode-int blend-mode))
+  nil)

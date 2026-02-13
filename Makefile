@@ -14,7 +14,8 @@ TEST_SYSTEM := flutter-render-stack/tests
 TEST_PKG := flutter-render-stack-tests
 
 .PHONY: all load test test-impeller test-flow test-exports test-conditions \
-	test-enums test-integration clean check-quicklisp
+	test-enums test-integration demo-line-metrics demo-typography-hit-testing \
+	demo-elevated-panels clean check-quicklisp
 
 all: test
 
@@ -64,8 +65,27 @@ test-enums: check-quicklisp
 
 test-integration: check-quicklisp
 	$(SBCL) $(SBCL_FLAGS) $(QL_BOOT) $(ASDF_BOOT) \
-	  --eval '(ql:quickload :$(TEST_SYSTEM) :silent t)' \
-	  --eval '(parachute:test (quote $(TEST_PKG)::integration-suite))'
+  --eval '(ql:quickload :$(TEST_SYSTEM) :silent t)' \
+  --eval '(parachute:test (quote $(TEST_PKG)::integration-suite))'
+
+# Demo targets
+demo-line-metrics: check-quicklisp
+	$(SBCL) $(SBCL_FLAGS) $(QL_BOOT) $(ASDF_BOOT) \
+  --eval '(ql:quickload :$(SYSTEM) :silent t)' \
+  --eval '(load "examples/line-metrics-demo.lisp")' \
+  --eval '(line-metrics-demo:run)'
+
+demo-typography-hit-testing: check-quicklisp
+	$(SBCL) $(SBCL_FLAGS) $(QL_BOOT) $(ASDF_BOOT) \
+  --eval '(ql:quickload :$(SYSTEM) :silent t)' \
+  --eval '(load "examples/typography-hit-testing-demo.lisp")' \
+  --eval '(typography-hit-testing-demo:run)'
+
+demo-elevated-panels: check-quicklisp
+	$(SBCL) $(SBCL_FLAGS) $(QL_BOOT) $(ASDF_BOOT) \
+  --eval '(ql:quickload :$(SYSTEM) :silent t)' \
+  --eval '(load "examples/elevated-panels-demo.lisp")' \
+  --eval '(elevated-panels-demo:run)'
 
 clean:
 	@find . -type f \( -name "*.fasl" -o -name "*.x86f" -o -name "*.fas" \) -print0 | xargs -0 -r rm -f

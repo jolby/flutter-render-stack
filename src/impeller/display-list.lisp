@@ -465,11 +465,162 @@ Returns a color source pointer. Must be released with release-color-source."
                  stop-count colors-array stops-array
                  tile-enum
                  (cffi:null-pointer))))
+         (when (cffi:null-pointer-p cs)
+           (error 'impeller-creation-error :resource-type "radial gradient color source"))
+         cs))))
+
+(defun make-sweep-gradient-color-source (cx cy start-angle end-angle colors stops
+                                         &key (tile-mode :clamp))
+  "Create a sweep (angular) gradient color source.
+
+Arguments:
+  cx, cy       - Center point of gradient
+  start-angle  - Starting angle in degrees (0 = right, 90 = down)
+  end-angle    - Ending angle in degrees
+  colors       - List of (r g b a) color tuples (each 0.0-1.0)
+  stops        - List of stop positions (0.0-1.0), same length as colors
+  tile-mode    - :clamp, :repeat, :mirror, or :decal (default :clamp)
+
+The sweep gradient radiates outward from the center point, with colors
+rotating around the center like a radar sweep or color wheel.
+
+Returns a color source pointer. Must be released with release-color-source."
+  (let ((stop-count (length colors))
+        (tile-enum (tile-mode-keyword->tile-mode-int tile-mode)))
+    (cffi:with-foreign-objects ((center-point '(:struct impeller-ffi:point))
+                                (colors-array '(:struct impeller-ffi:color) stop-count)
+                                (stops-array :float stop-count))
+      ;; Set center point
+      (setf (cffi:foreign-slot-value center-point '(:struct impeller-ffi:point) '%impeller::x)
+            (float cx 1.0f0))
+      (setf (cffi:foreign-slot-value center-point '(:struct impeller-ffi:point) '%impeller::y)
+            (float cy 1.0f0))
+      ;; Fill colors and stops arrays
+      (loop for i from 0
+            for (r g b a) in colors
+            for stop in stops
+            for color-ptr = (cffi:mem-aptr colors-array '(:struct impeller-ffi:color) i)
+            do (setf (cffi:foreign-slot-value color-ptr '(:struct impeller-ffi:color) '%impeller::red)
+                     (float r 1.0f0))
+               (setf (cffi:foreign-slot-value color-ptr '(:struct impeller-ffi:color) '%impeller::green)
+                     (float g 1.0f0))
+               (setf (cffi:foreign-slot-value color-ptr '(:struct impeller-ffi:color) '%impeller::blue)
+                     (float b 1.0f0))
+               (setf (cffi:foreign-slot-value color-ptr '(:struct impeller-ffi:color) '%impeller::alpha)
+                     (float a 1.0f0))
+               (setf (cffi:foreign-slot-value color-ptr '(:struct impeller-ffi:color) '%impeller::color-space)
+                     +color-space-srgb+)
+               (setf (cffi:mem-aref stops-array :float i) (float stop 1.0f0)))
+      ;; Create the color source
+      (let ((cs (impeller-ffi:color-source-create-sweep-gradient-new
+                 center-point
+                 (float start-angle 1.0f0)
+                 (float end-angle 1.0f0)
+                 stop-count colors-array stops-array
+                 tile-enum
+                 (cffi:null-pointer))))
         (when (cffi:null-pointer-p cs)
-          (error 'impeller-creation-error :resource-type "radial gradient color source"))
+          (error 'impeller-creation-error :resource-type "sweep gradient color source"))
+        cs))))
+
+(defun make-conical-gradient-color-source (start-cx start-cy start-radius
+                                           end-cx end-cy end-radius
+                                           colors stops
+                                           &key (tile-mode :clamp))
+  "Create a conical (two-point) gradient color source.
+
+Arguments:
+  start-cx, start-cy  - Starting center point
+  start-radius        - Starting radius
+  end-cx, end-cy      - Ending center point
+  end-radius          - Ending radius
+  colors              - List of (r g b a) color tuples (each 0.0-1.0)
+  stops               - List of stop positions (0.0-1.0), same length as colors
+  tile-mode           - :clamp, :repeat, :mirror, or :decal (default :clamp)
+
+The conical gradient interpolates between two circles, creating effects
+like spheres, cones, or 3D highlights. Also known as a 2-point radial
+gradient.
+
+Returns a color source pointer. Must be released with release-color-source."
+  (let ((stop-count (length colors))
+        (tile-enum (tile-mode-keyword->tile-mode-int tile-mode)))
+    (cffi:with-foreign-objects ((start-point '(:struct impeller-ffi:point))
+                                (end-point '(:struct impeller-ffi:point))
+                                (colors-array '(:struct impeller-ffi:color) stop-count)
+                                (stops-array :float stop-count))
+      ;; Set start point
+      (setf (cffi:foreign-slot-value start-point '(:struct impeller-ffi:point) '%impeller::x)
+            (float start-cx 1.0f0))
+      (setf (cffi:foreign-slot-value start-point '(:struct impeller-ffi:point) '%impeller::y)
+            (float start-cy 1.0f0))
+      ;; Set end point
+      (setf (cffi:foreign-slot-value end-point '(:struct impeller-ffi:point) '%impeller::x)
+            (float end-cx 1.0f0))
+      (setf (cffi:foreign-slot-value end-point '(:struct impeller-ffi:point) '%impeller::y)
+            (float end-cy 1.0f0))
+      ;; Fill colors and stops arrays
+      (loop for i from 0
+            for (r g b a) in colors
+            for stop in stops
+            for color-ptr = (cffi:mem-aptr colors-array '(:struct impeller-ffi:color) i)
+            do (setf (cffi:foreign-slot-value color-ptr '(:struct impeller-ffi:color) '%impeller::red)
+                     (float r 1.0f0))
+               (setf (cffi:foreign-slot-value color-ptr '(:struct impeller-ffi:color) '%impeller::green)
+                     (float g 1.0f0))
+               (setf (cffi:foreign-slot-value color-ptr '(:struct impeller-ffi:color) '%impeller::blue)
+                     (float b 1.0f0))
+               (setf (cffi:foreign-slot-value color-ptr '(:struct impeller-ffi:color) '%impeller::alpha)
+                     (float a 1.0f0))
+               (setf (cffi:foreign-slot-value color-ptr '(:struct impeller-ffi:color) '%impeller::color-space)
+                     +color-space-srgb+)
+               (setf (cffi:mem-aref stops-array :float i) (float stop 1.0f0)))
+      ;; Create the color source
+      (let ((cs (impeller-ffi:color-source-create-conical-gradient-new
+                 start-point (float start-radius 1.0f0)
+                 end-point (float end-radius 1.0f0)
+                 stop-count colors-array stops-array
+                 tile-enum
+                 (cffi:null-pointer))))
+        (when (cffi:null-pointer-p cs)
+          (error 'impeller-creation-error :resource-type "conical gradient color source"))
         cs))))
 
 (defun release-color-source (color-source)
   "Release an Impeller color source."
   (impeller-ffi:color-source-release color-source)
   nil)
+
+(defun make-image-color-source (texture &key (horizontal-tile-mode :clamp)
+                                             (vertical-tile-mode :clamp)
+                                             (sampling :linear))
+  "Create a color source from a texture/image.
+
+Arguments:
+  texture              - Texture object from make-texture-from-bytes
+  horizontal-tile-mode - How to tile horizontally: :clamp, :repeat, :mirror, :decal
+  vertical-tile-mode   - How to tile vertically: :clamp, :repeat, :mirror, :decal
+  sampling             - Texture sampling: :nearest-neighbor or :linear
+
+Returns a color source that can be used with paint-set-color-source to
+draw textured shapes.
+
+Example:
+  ;; Create a textured rectangle
+  (let* ((texture (make-texture-from-bytes ctx 100 100 pixel-data))
+         (color-source (make-image-color-source texture
+                                                :horizontal-tile-mode :repeat
+                                                :vertical-tile-mode :repeat)))
+    (unwind-protect
+         (progn
+           (paint-set-color-source paint color-source)
+           (draw-rect builder paint 0 0 200 200))
+      (release-color-source color-source)
+      (release-texture texture)))"
+  (let ((cs (impeller-ffi:color-source-create-image-new
+             texture
+             (tile-mode-keyword->tile-mode-int horizontal-tile-mode)
+             (tile-mode-keyword->tile-mode-int vertical-tile-mode)
+             (texture-sampling-keyword->texture-sampling-int sampling))))
+    (unless (cffi:null-pointer-p cs)
+      cs)))

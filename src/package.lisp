@@ -34,15 +34,58 @@
    #:paint-set-stroke-width
    #:paint-set-stroke-cap
    #:paint-set-stroke-join
-   #:paint-set-stroke-miter
-   #:paint-set-color-source
+    #:paint-set-stroke-miter
+    #:paint-set-color-source
+    #:paint-set-blend-mode
 
-   ;; === IMPELLER: Color sources (gradients) ===
-   #:make-linear-gradient-color-source
-   #:make-radial-gradient-color-source
-   #:release-color-source
+    ;; === IMPELLER: Color sources (gradients) ===
+    #:make-linear-gradient-color-source
+    #:make-radial-gradient-color-source
+    #:make-sweep-gradient-color-source
+    #:make-conical-gradient-color-source
+    #:make-image-color-source
+    #:release-color-source
 
-   ;; === IMPELLER: Display list building ===
+    ;; === IMPELLER: Mask filters ===
+    #:make-blur-mask-filter
+    #:release-mask-filter
+    #:paint-set-mask-filter
+    #:make-drop-shadow-filter
+    #:make-outer-glow-filter
+    #:make-inner-shadow-filter
+
+    ;; === IMPELLER: Image filters ===
+    #:make-blur-image-filter
+    #:make-dilate-image-filter
+    #:make-erode-image-filter
+    #:compose-image-filters
+    #:make-matrix-image-filter
+    #:release-image-filter
+    #:paint-set-image-filter
+    #:make-drop-shadow-image-filter
+    #:make-outline-image-filter
+
+    ;; === IMPELLER: Color filters ===
+    #:make-blend-color-filter
+    #:make-color-matrix-filter
+    #:release-color-filter
+    #:paint-set-color-filter
+    #:make-grayscale-filter
+    #:make-sepia-filter
+    #:make-invert-filter
+    #:make-brightness-filter
+    #:make-contrast-filter
+    #:make-saturation-filter
+    #:make-tint-filter
+
+    ;; === IMPELLER: Textures ===
+    #:make-texture-from-bytes
+    #:release-texture
+    #:make-solid-color-texture
+    #:make-checkerboard-texture
+    #:texture-get-size
+
+    ;; === IMPELLER: Display list building ===
    #:with-display-list-builder
    #:draw-paint
    #:draw-rect
@@ -83,10 +126,17 @@
    ;; === IMPELLER: Rounded rectangles ===
    #:draw-rounded-rect
 
-   ;; === IMPELLER: Shadows ===
-   #:draw-shadow
+    ;; === IMPELLER: Shadows ===
+    #:draw-shadow
 
-   ;; === IMPELLER: Surface management ===
+    ;; === IMPELLER: Elevated panels ===
+    #:draw-elevated-panel
+    #:draw-card
+    #:draw-fab
+    #:draw-dialog
+    #:draw-elevation-shadow
+
+    ;; === IMPELLER: Surface management ===
    #:make-wrapped-fbo-surface
    #:release-surface
 
@@ -96,15 +146,22 @@
    #:register-font-from-memory
    #:register-font-from-file
 
-   ;; === IMPELLER: Paragraph style ===
-   #:make-paragraph-style
-   #:release-paragraph-style
-   #:paragraph-style-set-font-family
-   #:paragraph-style-set-font-size
-   #:paragraph-style-set-font-weight
-   #:paragraph-style-set-font-style
-   #:paragraph-style-set-foreground
-   #:paragraph-style-set-text-alignment
+    ;; === IMPELLER: Paragraph style ===
+    #:make-paragraph-style
+    #:release-paragraph-style
+    #:paragraph-style-set-font-family
+    #:paragraph-style-set-font-size
+    #:paragraph-style-set-font-weight
+    #:paragraph-style-set-font-style
+    #:paragraph-style-set-foreground
+    #:paragraph-style-set-background
+    #:paragraph-style-set-text-alignment
+    #:paragraph-style-set-text-direction
+    #:paragraph-style-set-height
+    #:paragraph-style-set-max-lines
+    #:paragraph-style-set-locale
+    #:paragraph-style-set-ellipsis
+    #:paragraph-style-set-text-decoration
 
    ;; === IMPELLER: Paragraph building ===
    #:with-paragraph-builder
@@ -114,14 +171,50 @@
    #:paragraph-builder-build
    #:release-paragraph
 
-   ;; === IMPELLER: Paragraph metrics ===
-   #:paragraph-get-height
-   #:paragraph-get-max-width
-   #:paragraph-get-longest-line-width
-   #:paragraph-get-alphabetic-baseline
+    ;; === IMPELLER: Paragraph metrics ===
+    #:paragraph-get-height
+    #:paragraph-get-max-width
+    #:paragraph-get-longest-line-width
+    #:paragraph-get-alphabetic-baseline
+    #:paragraph-get-ideographic-baseline
+    #:paragraph-get-line-count
+    #:paragraph-get-max-intrinsic-width
+    #:paragraph-get-min-intrinsic-width
 
-   ;; === IMPELLER: Drawing paragraphs ===
-   #:draw-paragraph
+    ;; === IMPELLER: Line metrics ===
+    #:paragraph-get-line-metrics
+    #:release-line-metrics
+    #:line-metrics-count
+    #:line-metrics-unscaled-ascent
+    #:line-metrics-ascent
+    #:line-metrics-descent
+    #:line-metrics-baseline
+    #:line-metrics-width
+    #:line-metrics-height
+    #:line-metrics-left
+    #:line-metrics-hardbreak-p
+    #:line-metrics-code-unit-start-index
+    #:line-metrics-code-unit-end-index
+    #:line-metrics-code-unit-end-index-excluding-whitespace
+    #:line-metrics-code-unit-end-index-including-newline
+
+    ;; === IMPELLER: Glyph info ===
+    #:paragraph-glyph-info-at-code-unit-index
+    #:paragraph-glyph-info-at-coordinate
+    #:release-glyph-info
+    #:glyph-info-grapheme-cluster-code-unit-range-begin
+    #:glyph-info-grapheme-cluster-code-unit-range-end
+    #:glyph-info-grapheme-cluster-bounds
+    #:glyph-info-is-ellipsis
+    #:glyph-info-text-direction
+
+    ;; === IMPELLER: Word boundaries ===
+    #:word-boundary
+    #:text-range-start
+    #:text-range-end
+
+    ;; === IMPELLER: Drawing paragraphs ===
+    #:draw-paragraph
 
    ;; === FLOW: Conditions ===
    #:flow-creation-error

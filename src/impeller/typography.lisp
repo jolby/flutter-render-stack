@@ -16,6 +16,12 @@
 (rs-internals:define-case-converter (:text-alignment-keyword :text-alignment-int)
   (:left 0) (:right 1) (:center 2) (:justify 3) (:start 4) (:end 5))
 
+(rs-internals:define-case-converter (:text-direction-keyword :text-direction-int)
+  (:rtl 0) (:ltr 1))
+
+(rs-internals:define-case-converter (:text-decoration-keyword :text-decoration-int)
+  (:none 0) (:underline 1) (:overline 2) (:line-through 3))
+
 ;;; Typography context management
 
 (defun make-typography-context ()
@@ -175,6 +181,64 @@ Arguments:
   (impeller-ffi:paragraph-style-set-text-alignment
    style (text-alignment-keyword->text-alignment-int alignment)))
 
+(defun paragraph-style-set-text-direction (style direction)
+  "Set the text direction for a paragraph style.
+
+Arguments:
+  style     - Paragraph style from make-paragraph-style
+  direction - :ltr (left-to-right) or :rtl (right-to-left)"
+  (impeller-ffi:paragraph-style-set-text-direction
+   style (text-direction-keyword->text-direction-int direction)))
+
+(defun paragraph-style-set-background (style paint)
+  "Set the background paint for a paragraph style.
+
+Arguments:
+  style - Paragraph style from make-paragraph-style
+  paint - Paint object from make-paint (with color set)"
+  (impeller-ffi:paragraph-style-set-background style paint))
+
+(defun paragraph-style-set-height (style height)
+  "Set the line height multiplier for a paragraph style.
+
+Arguments:
+  style  - Paragraph style from make-paragraph-style
+  height - Line height multiplier (float, 1.0 = normal)"
+  (impeller-ffi:paragraph-style-set-height style (float height 1.0f0)))
+
+(defun paragraph-style-set-max-lines (style max-lines)
+  "Set the maximum number of lines for a paragraph.
+
+Arguments:
+  style     - Paragraph style from make-paragraph-style
+  max-lines - Maximum number of lines (integer), or 0 for unlimited"
+  (impeller-ffi:paragraph-style-set-max-lines style max-lines))
+
+(defun paragraph-style-set-locale (style locale)
+  "Set the locale for a paragraph style.
+
+Arguments:
+  style  - Paragraph style from make-paragraph-style
+  locale - Locale string (e.g., \"en_US\", \"ja_JP\")"
+  (impeller-ffi:paragraph-style-set-locale style locale))
+
+(defun paragraph-style-set-ellipsis (style ellipsis)
+  "Set the ellipsis string for truncated text.
+
+Arguments:
+  style    - Paragraph style from make-paragraph-style
+  ellipsis - Ellipsis string (e.g., \"...\", \"…\")"
+  (impeller-ffi:paragraph-style-set-ellipsis style ellipsis))
+
+(defun paragraph-style-set-text-decoration (style decoration)
+  "Set the text decoration for a paragraph style.
+
+Arguments:
+  style      - Paragraph style from make-paragraph-style
+  decoration - :none, :underline, :overline, or :line-through"
+  (impeller-ffi:paragraph-style-set-text-decoration
+   style (text-decoration-keyword->text-decoration-int decoration)))
+
 ;;; Paragraph builder and rendering
 
 (defmacro with-paragraph-builder ((builder-var typography-context) &body body)
@@ -286,6 +350,48 @@ Arguments:
 Returns the baseline offset from the top in logical pixels (float)."
   (rs-internals:without-float-traps
     (impeller-ffi:paragraph-get-alphabetic-baseline paragraph)))
+
+(defun paragraph-get-ideographic-baseline (paragraph)
+  "Get the ideographic baseline of a laid-out paragraph.
+
+Arguments:
+  paragraph - Paragraph from paragraph-builder-build
+
+Returns the ideographic baseline offset from the top in logical pixels (float).
+This is used for CJK (Chinese, Japanese, Korean) fonts."
+  (rs-internals:without-float-traps
+    (impeller-ffi:paragraph-get-ideographic-baseline paragraph)))
+
+(defun paragraph-get-line-count (paragraph)
+  "Get the number of lines in a laid-out paragraph.
+
+Arguments:
+  paragraph - Paragraph from paragraph-builder-build
+
+Returns the total number of lines as an integer."
+  (impeller-ffi:paragraph-get-line-count paragraph))
+
+(defun paragraph-get-max-intrinsic-width (paragraph)
+  "Get the maximum intrinsic width of a laid-out paragraph.
+
+Arguments:
+  paragraph - Paragraph from paragraph-builder-build
+
+Returns the width the paragraph would have if no line breaking constraints
+were applied (float)."
+  (rs-internals:without-float-traps
+    (impeller-ffi:paragraph-get-max-intrinsic-width paragraph)))
+
+(defun paragraph-get-min-intrinsic-width (paragraph)
+  "Get the minimum intrinsic width of a laid-out paragraph.
+
+Arguments:
+  paragraph - Paragraph from paragraph-builder-build
+
+Returns the minimum width required to layout the paragraph without
+overflow (float)."
+  (rs-internals:without-float-traps
+    (impeller-ffi:paragraph-get-min-intrinsic-width paragraph)))
 
 ;;; Drawing paragraphs
 

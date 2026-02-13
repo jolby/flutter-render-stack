@@ -13,14 +13,25 @@
   :components ((:module "src"
                 :components ((:file "package")
                              (:file "conditions" :depends-on ("package"))
-                             ;; Impeller (2D graphics)
-                             (:module "impeller"
-                              :depends-on ("conditions")
-                              :components ((:file "context")
-                                           (:file "paint" :depends-on ("context"))
-                                           (:file "path" :depends-on ("context"))
-                                           (:file "display-list" :depends-on ("paint" "path"))
-                                           (:file "typography" :depends-on ("context"))))
+                              ;; Impeller (2D graphics)
+                              (:module "impeller"
+                               :depends-on ("conditions")
+                               :components ((:file "context")
+                                            (:file "paint" :depends-on ("context"))
+                                            (:file "path" :depends-on ("context"))
+                                            (:file "display-list" :depends-on ("paint" "path"))
+                                            (:file "typography" :depends-on ("context"))
+                                            (:file "mask-filters" :depends-on ("paint"))
+                                            (:file "image-filters" :depends-on ("paint"))
+                                            (:file "color-filters" :depends-on ("paint"))
+                                            (:file "texture" :depends-on ("context"))
+                                            (:file "elevated-panels" :depends-on ("display-list" "path"))))
+                              ;; Typography (extended text metrics)
+                              (:module "typography"
+                               :depends-on ("impeller")
+                               :components ((:file "line-metrics")
+                                            (:file "glyph-info")
+                                            (:file "word-boundaries")))
                              ;; Flow (compositor)
                              (:module "flow"
                               :depends-on ("conditions")

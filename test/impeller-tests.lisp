@@ -37,7 +37,8 @@
   (true (fboundp 'frs:paint-set-stroke-cap))
   (true (fboundp 'frs:paint-set-stroke-join))
   (true (fboundp 'frs:paint-set-stroke-miter))
-  (true (fboundp 'frs:paint-set-color-source)))
+  (true (fboundp 'frs:paint-set-color-source))
+  (true (fboundp 'frs:paint-set-blend-mode)))
 
 ;;; Path exports
 
@@ -89,7 +90,77 @@
   ;; Gradients
   (true (fboundp 'frs:make-linear-gradient-color-source))
   (true (fboundp 'frs:make-radial-gradient-color-source))
+  (true (fboundp 'frs:make-sweep-gradient-color-source))
+  (true (fboundp 'frs:make-conical-gradient-color-source))
+  (true (fboundp 'frs:make-image-color-source))
   (true (fboundp 'frs:release-color-source)))
+
+;;; Elevated panel exports
+
+(define-test elevated-panel-exports
+  :parent export-suite
+  :description "Verify elevated panel functions are exported."
+  (true (fboundp 'frs:draw-shadow))
+  (true (fboundp 'frs:draw-elevated-panel))
+  (true (fboundp 'frs:draw-card))
+  (true (fboundp 'frs:draw-fab))
+  (true (fboundp 'frs:draw-dialog))
+  (true (fboundp 'frs:draw-elevation-shadow)))
+
+;;; Mask filter exports
+
+(define-test mask-filter-exports
+  :parent export-suite
+  :description "Verify mask filter functions are exported."
+  (true (fboundp 'frs:make-blur-mask-filter))
+  (true (fboundp 'frs:release-mask-filter))
+  (true (fboundp 'frs:paint-set-mask-filter))
+  (true (fboundp 'frs:make-drop-shadow-filter))
+  (true (fboundp 'frs:make-outer-glow-filter))
+  (true (fboundp 'frs:make-inner-shadow-filter)))
+
+;;; Image filter exports
+
+(define-test image-filter-exports
+  :parent export-suite
+  :description "Verify image filter functions are exported."
+  (true (fboundp 'frs:make-blur-image-filter))
+  (true (fboundp 'frs:make-dilate-image-filter))
+  (true (fboundp 'frs:make-erode-image-filter))
+  (true (fboundp 'frs:compose-image-filters))
+  (true (fboundp 'frs:make-matrix-image-filter))
+  (true (fboundp 'frs:release-image-filter))
+  (true (fboundp 'frs:paint-set-image-filter))
+  (true (fboundp 'frs:make-drop-shadow-image-filter))
+  (true (fboundp 'frs:make-outline-image-filter)))
+
+;;; Color filter exports
+
+(define-test color-filter-exports
+  :parent export-suite
+  :description "Verify color filter functions are exported."
+  (true (fboundp 'frs:make-blend-color-filter))
+  (true (fboundp 'frs:make-color-matrix-filter))
+  (true (fboundp 'frs:release-color-filter))
+  (true (fboundp 'frs:paint-set-color-filter))
+  (true (fboundp 'frs:make-grayscale-filter))
+  (true (fboundp 'frs:make-sepia-filter))
+  (true (fboundp 'frs:make-invert-filter))
+  (true (fboundp 'frs:make-brightness-filter))
+  (true (fboundp 'frs:make-contrast-filter))
+  (true (fboundp 'frs:make-saturation-filter))
+  (true (fboundp 'frs:make-tint-filter)))
+
+;;; Texture exports
+
+(define-test texture-exports
+  :parent export-suite
+  :description "Verify texture functions are exported."
+  (true (fboundp 'frs:make-texture-from-bytes))
+  (true (fboundp 'frs:release-texture))
+  (true (fboundp 'frs:make-solid-color-texture))
+  (true (fboundp 'frs:make-checkerboard-texture))
+  (true (fboundp 'frs:texture-get-size)))
 
 ;;; Typography exports
 
@@ -111,7 +182,14 @@
   (true (fboundp 'frs:paragraph-style-set-font-weight))
   (true (fboundp 'frs:paragraph-style-set-font-style))
   (true (fboundp 'frs:paragraph-style-set-foreground))
-  (true (fboundp 'frs:paragraph-style-set-text-alignment)))
+  (true (fboundp 'frs:paragraph-style-set-background))
+  (true (fboundp 'frs:paragraph-style-set-text-alignment))
+  (true (fboundp 'frs:paragraph-style-set-text-direction))
+  (true (fboundp 'frs:paragraph-style-set-height))
+  (true (fboundp 'frs:paragraph-style-set-max-lines))
+  (true (fboundp 'frs:paragraph-style-set-locale))
+  (true (fboundp 'frs:paragraph-style-set-ellipsis))
+  (true (fboundp 'frs:paragraph-style-set-text-decoration)))
 
 (define-test paragraph-builder-exports
   :parent export-suite
@@ -129,12 +207,54 @@
   (true (fboundp 'frs:paragraph-get-height))
   (true (fboundp 'frs:paragraph-get-max-width))
   (true (fboundp 'frs:paragraph-get-longest-line-width))
-  (true (fboundp 'frs:paragraph-get-alphabetic-baseline)))
+  (true (fboundp 'frs:paragraph-get-alphabetic-baseline))
+  (true (fboundp 'frs:paragraph-get-ideographic-baseline))
+  (true (fboundp 'frs:paragraph-get-line-count))
+  (true (fboundp 'frs:paragraph-get-max-intrinsic-width))
+  (true (fboundp 'frs:paragraph-get-min-intrinsic-width)))
 
 (define-test draw-paragraph-export
   :parent export-suite
   :description "Verify draw-paragraph function is exported."
   (true (fboundp 'frs:draw-paragraph)))
+
+(define-test line-metrics-exports
+  :parent export-suite
+  :description "Verify line metrics functions are exported."
+  (true (fboundp 'frs:paragraph-get-line-metrics))
+  (true (fboundp 'frs:release-line-metrics))
+  (true (fboundp 'frs:line-metrics-count))
+  (true (fboundp 'frs:line-metrics-unscaled-ascent))
+  (true (fboundp 'frs:line-metrics-ascent))
+  (true (fboundp 'frs:line-metrics-descent))
+  (true (fboundp 'frs:line-metrics-baseline))
+  (true (fboundp 'frs:line-metrics-width))
+  (true (fboundp 'frs:line-metrics-height))
+  (true (fboundp 'frs:line-metrics-left))
+  (true (fboundp 'frs:line-metrics-hardbreak-p))
+  (true (fboundp 'frs:line-metrics-code-unit-start-index))
+  (true (fboundp 'frs:line-metrics-code-unit-end-index))
+  (true (fboundp 'frs:line-metrics-code-unit-end-index-excluding-whitespace))
+  (true (fboundp 'frs:line-metrics-code-unit-end-index-including-newline)))
+
+(define-test glyph-info-exports
+  :parent export-suite
+  :description "Verify glyph info functions are exported."
+  (true (fboundp 'frs:paragraph-glyph-info-at-code-unit-index))
+  (true (fboundp 'frs:paragraph-glyph-info-at-coordinate))
+  (true (fboundp 'frs:release-glyph-info))
+  (true (fboundp 'frs:glyph-info-grapheme-cluster-code-unit-range-begin))
+  (true (fboundp 'frs:glyph-info-grapheme-cluster-code-unit-range-end))
+  (true (fboundp 'frs:glyph-info-grapheme-cluster-bounds))
+  (true (fboundp 'frs:glyph-info-is-ellipsis))
+  (true (fboundp 'frs:glyph-info-text-direction)))
+
+(define-test word-boundary-exports
+  :parent export-suite
+  :description "Verify word boundary functions are exported."
+  (true (fboundp 'frs:word-boundary))
+  (true (fboundp 'frs:text-range-start))
+  (true (fboundp 'frs:text-range-end)))
 
 ;;; Rounded rect export
 
