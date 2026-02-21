@@ -17,6 +17,32 @@
 
 ;;; Display list builder lifecycle
 
+(defun make-display-list-builder ()
+  "Create a persistent display list builder.
+
+Unlike WITH-DISPLAY-LIST-BUILDER, the caller owns the builder's lifetime
+and must release it via RELEASE-DISPLAY-LIST-BUILDER when done.
+
+Use this when the builder must outlive a single dynamic extent — for example
+when McCLIM drawing ops accumulate into a builder over multiple calls and the
+builder is finalized later by MEDIUM-FINISH-OUTPUT.
+
+Returns a display list builder pointer."
+  (let ((builder (impeller-ffi:display-list-builder-new (cffi:null-pointer))))
+    (when (cffi:null-pointer-p builder)
+      (error 'impeller-creation-error :resource-type "display list builder"))
+    builder))
+
+(defun release-display-list-builder (builder)
+  "Release a display list builder created by MAKE-DISPLAY-LIST-BUILDER.
+
+Does NOT create a display list — use CREATE-DISPLAY-LIST first if you need
+to capture the recorded operations before releasing the builder.
+
+Returns nil."
+  (impeller-ffi:display-list-builder-release builder)
+  nil)
+
 (defmacro with-display-list-builder ((builder-var) &body body)
   "Allocate and manage a display list builder.
 

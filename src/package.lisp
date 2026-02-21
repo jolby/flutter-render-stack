@@ -86,6 +86,8 @@
     #:texture-get-size
 
     ;; === IMPELLER: Display list building ===
+   #:make-display-list-builder
+   #:release-display-list-builder
    #:with-display-list-builder
    #:draw-paint
    #:draw-rect
