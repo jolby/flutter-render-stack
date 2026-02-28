@@ -237,6 +237,7 @@
    #:make-transform-layer
    #:make-identity-transform-layer
    #:make-translation-transform-layer
+   #:make-scale-transform-layer
    #:release-transform-layer
    #:retain-transform-layer
    #:transform-layer-add-child

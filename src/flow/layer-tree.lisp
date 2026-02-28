@@ -104,6 +104,22 @@ Arguments:
             (cffi:mem-aref m-ptr :float 13) (float y 1.0f0)))
     (make-transform-layer matrix)))
 
+(defun make-scale-transform-layer (scale-x scale-y)
+  "Create a transform layer applying (scale-x, scale-y) scaling.
+
+Arguments:
+  scale-x - X scale factor (float)
+  scale-y - Y scale factor (float)"
+  (cffi:with-foreign-object (matrix '(:struct flow-ffi:matrix))
+    (let ((m-ptr (cffi:foreign-slot-pointer matrix '(:struct flow-ffi:matrix) '%flow::m)))
+      (dotimes (i 16)
+        (setf (cffi:mem-aref m-ptr :float i) 0.0f0))
+      (setf (cffi:mem-aref m-ptr :float 0)  (float scale-x 1.0f0)
+            (cffi:mem-aref m-ptr :float 5)  (float scale-y 1.0f0)
+            (cffi:mem-aref m-ptr :float 10) 1.0f0
+            (cffi:mem-aref m-ptr :float 15) 1.0f0))
+    (make-transform-layer matrix)))
+
 (defun release-transform-layer (layer)
   "Release a transform layer."
   (flow-ffi:transform-layer-release layer)
