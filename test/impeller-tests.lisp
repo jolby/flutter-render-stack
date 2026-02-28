@@ -358,8 +358,8 @@
 (define-test clip-operation-conversion
   :parent enum-suite
   :description "Test clip operation keyword conversion."
-  (is = 0 (frs::clip-op-keyword->clip-op-int :intersect))
-  (is = 1 (frs::clip-op-keyword->clip-op-int :difference)))
+  (is = 1 (frs::clip-op-keyword->clip-op-int :intersect))
+  (is = 0 (frs::clip-op-keyword->clip-op-int :difference)))
 
 ;;; Bidirectional conversion
 

@@ -13,7 +13,7 @@
   (:clamp 0) (:repeat 1) (:mirror 2) (:decal 3))
 
 (rs-internals:define-case-converter (:clip-op-keyword :clip-op-int)
-  (:intersect 0) (:difference 1))
+  (:difference 0) (:intersect 1))
 
 ;;; Display list builder lifecycle
 
